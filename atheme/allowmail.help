@@ -1,0 +1,21 @@
+Help for ALLOWMAIL:
+
+Registration is limited to email addresses in the domains set by
+allowmail_domains in atheme.conf. ALLOWMAIL keeps a list of other
+addresses that may register anyway, for alumni and guests.
+
+The list is saved in the services database. Glob patterns work.
+
+Syntax: ALLOWMAIL ADD <email> <reason>
+
+Examples:
+    /msg &nick& ALLOWMAIL ADD friend@gmail.com alum, class of 2024
+    /msg &nick& ALLOWMAIL ADD *@lanecc.edu visiting from Lane
+
+ALLOWMAIL DEL removes an address. Accounts it already made are kept.
+
+Syntax: ALLOWMAIL DEL <email>
+
+ALLOWMAIL LIST shows the domains and every address on the list.
+
+Syntax: ALLOWMAIL LIST

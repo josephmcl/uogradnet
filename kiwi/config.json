@@ -1,0 +1,57 @@
+{
+    "windowTitle": "UOGradNet chat",
+    "startupScreen": "welcome",
+    "restricted": false,
+    "theme": "Default",
+    "themes": [
+        {
+            "name": "Default",
+            "url": "static/themes/default"
+        },
+        {
+            "name": "Dark",
+            "url": "static/themes/dark"
+        },
+        {
+            "name": "Coffee",
+            "url": "static/themes/coffee"
+        },
+        {
+            "name": "GrayFox",
+            "url": "static/themes/grayfox"
+        },
+        {
+            "name": "Nightswatch",
+            "url": "static/themes/nightswatch"
+        },
+        {
+            "name": "Osprey",
+            "url": "static/themes/osprey"
+        },
+        {
+            "name": "Radioactive",
+            "url": "static/themes/radioactive"
+        },
+        {
+            "name": "Sky",
+            "url": "static/themes/sky"
+        },
+        {
+            "name": "Elite",
+            "url": "static/themes/elite"
+        }
+    ],
+    "startupOptions": {
+        "websocket": "wss://chat.uogradnet.xyz/webirc",
+        "channel": "#help",
+        "nick": "grad-?",
+        "greetingText": "UOGradNet",
+        "footerText": "New here? You start in #help. To get an account, follow the steps at <a href=\"https://uogradnet.xyz/#join\" target=\"_blank\">uogradnet.xyz</a>."
+    },
+    "plugins": [
+        {
+            "name": "customise",
+            "url": "static/plugins/customise.html"
+        }
+    ]
+}

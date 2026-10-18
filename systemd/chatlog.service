@@ -1,0 +1,22 @@
+# The C logger bot: channel activity -> PostgreSQL (database "chatlog").
+[Unit]
+Description=chatlog IRC logger
+After=network.target unrealircd.service atheme.service postgresql.service
+Wants=unrealircd.service postgresql.service
+
+[Service]
+Type=simple
+User=chatlog
+Group=chatlog
+EnvironmentFile=/etc/uogradnet/chatlog.env
+ExecStart=/usr/local/bin/chatlog
+Restart=always
+RestartSec=10s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

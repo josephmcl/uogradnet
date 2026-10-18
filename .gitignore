@@ -1,0 +1,5 @@
+# never commit real secrets; only etc/secrets.env.example belongs in git
+/etc/secrets.env
+*.env
+# macOS
+.DS_Store

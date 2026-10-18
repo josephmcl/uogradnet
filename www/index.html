@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>uogradnet</title>
+  <link rel="stylesheet" href="static/main.css"/>
+  <link rel="icon" href="static/favicon.ico"/>
+</head>
+<body>
+  <h1>UO Graduate Student Network</h1>
+
+  <p>
+    A chat network for grad students at the University of Oregon.
+  </p>
+
+  <h2 id="join">Join</h2>
+  <ol>
+    <li>
+      Open the <a href="https://chat.uogradnet.xyz/">browser chat</a>,
+      pick a nick, and press Start. You'll land in #help.
+    </li>
+    <li>
+      Make an account with your UO email. Fill these in, then copy the
+      line into the chat box and press Enter.
+      <div class="signup">
+        <label>UO email <input id="email" type="text" placeholder="duckid@uoregon.edu" autocomplete="off" spellcheck="false"></label>
+        <label>New password <input id="password" type="text" placeholder="no spaces" autocomplete="off" spellcheck="false"></label>
+        <code id="command">/msg NickServ REGISTER yourpassword duckid@uoregon.edu</code>
+        <button id="copy" type="button">Copy</button>
+      </div>
+      <small>This only fills in the line; nothing is sent anywhere.</small>
+    </li>
+    <li>
+      Check your UO email for a message from noreply@uogradnet.xyz.
+      Copy the line in it that starts with <code>/msg NickServ VERIFY</code>
+      into the chat box.
+    </li>
+    <li>
+      Done. Join any channel below. Next time, tick "I have a password"
+      on the start screen and you're logged in.
+    </li>
+  </ol>
+  <p>
+    Using your own IRC client? Connect to <code>irc.uogradnet.xyz</code>,
+    port 6697, TLS on, do steps 2 and 3, then set SASL to your nick and
+    password. Alumni and guests: ask in #help and an admin will let you in.
+  </p>
+
+  <h2>Channels</h2>
+  <p>
+    <a href="https://chat.uogradnet.xyz/#general">#general</a> introductions and announcements<br>
+    <a href="https://chat.uogradnet.xyz/#organizing">#organizing</a> meetings and campus organizing<br>
+    <a href="https://chat.uogradnet.xyz/#cs">#cs</a> computer science (<a href="https://cs.uogradnet.xyz/">more</a>)<br>
+    <a href="https://chat.uogradnet.xyz/#help">#help</a> questions about the network<br>
+    <a href="https://chat.uogradnet.xyz/#offtopic">#offtopic</a> everything else
+  </p>
+  <p>
+    Anyone with an account can make a new channel by joining it.
+  </p>
+
+  <h2>Logs</h2>
+  <p>
+    A bot saves messages in every channel above except #offtopic, so
+    decisions don't get lost. The log isn't published. Private messages
+    are never saved.
+  </p>
+
+  <p>
+    We are run and funded by graduate students and are not supported by 
+    the University of Oregon.
+    <a href="https://github.com/josephmcl/uogradnet">Source</a>.
+  </p>
+
+  <script>
+    /* Build the register command from the two fields. A DuckID alone
+       ("jdoe") becomes jdoe@uoregon.edu. Nothing leaves the page. */
+    const email = document.querySelector("#email");
+    const password = document.querySelector("#password");
+    const command = document.querySelector("#command");
+    const copy = document.querySelector("#copy");
+
+    function update() {
+      let address = email.value.trim() || "duckid@uoregon.edu";
+      if (!address.includes("@")) address += "@uoregon.edu";
+      const secret = password.value.replace(/\s/g, "") || "yourpassword";
+      command.textContent = `/msg NickServ REGISTER ${secret} ${address}`;
+    }
+
+    copy.addEventListener("click", () => {
+      navigator.clipboard.writeText(command.textContent)
+        .then(() => { copy.textContent = "Copied"; })
+        .catch(() => {
+          /* no clipboard access (plain http): select it instead */
+          getSelection().selectAllChildren(command);
+          copy.textContent = "Press Ctrl+C";
+        });
+      setTimeout(() => { copy.textContent = "Copy"; }, 2000);
+    });
+
+    email.addEventListener("input", update);
+    password.addEventListener("input", update);
+  </script>
+</body>
+</html>

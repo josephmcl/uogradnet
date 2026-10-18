@@ -1,0 +1,17 @@
+From: &from&
+To: &to&
+Reply-To: &replyto&
+Subject: Your &netname& registration code
+Date: &date&
+
+Hello &accountname&,
+
+To finish registering on &netname&, type this on IRC
+(in the browser chat, type it in any window):
+
+/msg &nicksvs& VERIFY REGISTER &accountname& &param&
+
+The code works for one day. If you didn't register, ignore this email
+and the registration will expire.
+
+https://uogradnet.xyz/

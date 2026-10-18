@@ -1,0 +1,145 @@
+/*
+ * UnrealIRCd 6 configuration for UOGradNet.
+ *
+ * This file is a template: `make deploy` fills in each placeholder (a NAME
+ * between two @ signs) from /etc/uogradnet/secrets.env and installs the result
+ * as ~unrealircd/unrealircd/conf/unrealircd.conf. Edit it here, in git.
+ *
+ * Ports
+ *   :6697            public, TLS        - IRC clients
+ *   127.0.0.1:6667   localhost, plain   - the chatlog bot
+ *   127.0.0.1:6900   localhost, plain   - Atheme services link
+ *   127.0.0.1:8000   localhost, plain   - WebSocket, reverse-proxied by lighttpd
+ *                                         as wss://chat.uogradnet.xyz/webirc
+ */
+
+include "modules.default.conf";
+include "help/help.conf";
+include "badwords.conf";
+include "operclass.default.conf";
+include "snomasks.default.conf";
+include "aliases/atheme.conf";         /* /NS, /CS, /NICKSERV ... -> Atheme */
+
+loadmodule "cloak_sha256";
+loadmodule "webserver";
+loadmodule "websocket";
+
+me {
+	name "irc.uogradnet.xyz";
+	info "UOGradNet";
+	sid "001";
+}
+
+admin {
+	"UOGradNet admins";
+	"@ADMIN_EMAIL@";
+}
+
+class clients { pingfreq 90; maxclients 1000; sendq 200k; recvq 8000; }
+class opers   { pingfreq 90; maxclients 50;   sendq 1M;   recvq 8000; }
+class servers { pingfreq 60; connfreq 15; maxclients 10; sendq 20M; }
+
+allow {
+	mask *;
+	class clients;
+	maxperip 5;            /* campus NAT: several people may share one address */
+}
+
+oper admin {
+	class opers;
+	mask *@*;
+	password "@OPER_PASSWORD_HASH@";   /* ./unrealircd mkpasswd */
+	operclass netadmin;
+	swhois "is a UOGradNet administrator";
+	vhost staff.uogradnet.xyz;
+}
+
+/* ---------------------------------------------------------------- listeners */
+
+listen {
+	ip *;
+	port 6697;
+	options { tls; }
+	tls-options {
+		certificate "tls/server.cert.pem";   /* copied from uacme by deploy/renew-certs */
+		key "tls/server.key.pem";
+	}
+}
+
+listen { ip 127.0.0.1; port 6667; }
+
+listen { ip 127.0.0.1; port 6900; options { serversonly; } }
+
+listen {
+	ip 127.0.0.1;
+	port 8000;
+	options {
+		websocket {
+			type text;
+			allow-origin { "chat.uogradnet.xyz"; }   /* host name only, no scheme */
+		}
+	}
+}
+
+/* lighttpd sits in front of the WebSocket port and tells us the real client
+ * address (and that the browser connection was HTTPS). */
+proxy lighttpd {
+	mask 127.0.0.1;
+	type forwarded;
+}
+
+/* ---------------------------------------------------------------- services */
+
+link services.uogradnet.xyz {
+	incoming { mask 127.0.0.1; }
+	password "@SERVICES_LINK_PASSWORD@";
+	class servers;
+}
+
+ulines { services.uogradnet.xyz; }
+
+/* ---------------------------------------------------------------- logging */
+
+log {
+	source { all; !debug; !join.LOCAL_CLIENT_JOIN; !join.REMOTE_CLIENT_JOIN;
+	         !part.LOCAL_CLIENT_PART; !part.REMOTE_CLIENT_PART;
+	         !kick.LOCAL_CLIENT_KICK; !kick.REMOTE_CLIENT_KICK; }
+	destination { file "ircd.log" { maxsize 50M; } }
+}
+
+/* ---------------------------------------------------------------- settings */
+
+set {
+	network-name     "UOGradNet";
+	default-server   "irc.uogradnet.xyz";
+	services-server  "services.uogradnet.xyz";
+	sasl-server      "services.uogradnet.xyz";
+	help-channel     "#help";
+	cloak-prefix     "grad";
+	prefix-quit      "Quit";
+	cloak-keys {
+		"@CLOAK_KEY_1@";          /* ./unrealircd gencloak */
+		"@CLOAK_KEY_2@";
+		"@CLOAK_KEY_3@";
+	}
+	kline-address    "@ADMIN_EMAIL@";
+	modes-on-connect "+ixw";
+	modes-on-oper    "+xws";
+	/* +R: only verified accounts can join. #help is the exception; at first
+	 * boot: /msg ChanServ REGISTER #help, then
+	 *       /msg ChanServ SET #help MLOCK +nt-R
+	 * +H: the server keeps 200 lines / 1 day of scrollback. */
+	modes-on-join    "+ntRH 200:1d";
+	maxchannelsperuser 30;
+	options { hide-ulines; }
+	plaintext-policy { user allow; oper warn; server allow; }
+
+	/* Until someone verifies their account they can sit in #help and talk
+	 * to NickServ (messages to services are always allowed), nothing else. */
+	restrict-commands {
+		private-message { except { identified yes; } }
+		private-notice  { except { identified yes; } }
+		channel-create  { except { identified yes; } }
+		invite          { except { identified yes; } }
+	}
+}

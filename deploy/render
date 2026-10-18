@@ -1,0 +1,36 @@
+#!/bin/sh
+# render TEMPLATE SECRETS > OUTPUT
+#
+# Replaces every @NAME@ in TEMPLATE with NAME's value from SECRETS, a file of
+# NAME=value lines (no quoting, no shell expansion: the value is everything
+# after the first '='). Plain string substitution, so values may contain
+# $, /, & or anything else. Fails if any @NAME@ is left unresolved.
+set -eu
+[ $# -eq 2 ] || { echo "usage: $0 TEMPLATE SECRETS" >&2; exit 64; }
+
+awk '
+FNR == NR {
+	if ($0 ~ /^[ \t]*(#|$)/) next
+	eq = index($0, "=")
+	if (eq > 1) val[substr($0, 1, eq - 1)] = substr($0, eq + 1)
+	next
+}
+{
+	out = ""; line = $0
+	while ((s = index(line, "@")) > 0) {
+		rest = substr(line, s + 1)
+		e = index(rest, "@")
+		name = substr(rest, 1, e - 1)
+		if (e > 1 && name ~ /^[A-Z][A-Z0-9_]*$/) {
+			if (!(name in val)) { printf "render: %s:%d: @%s@ is not set in secrets\n", FILENAME, FNR, name > "/dev/stderr"; bad = 1 }
+			out = out substr(line, 1, s - 1) val[name]
+			line = substr(rest, e + 1)
+		} else {
+			out = out substr(line, 1, s)
+			line = rest
+		}
+	}
+	print out line
+}
+END { exit bad }
+' "$2" "$1"

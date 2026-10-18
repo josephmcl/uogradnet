@@ -1,0 +1,6 @@
+channel	logged	description
+#general	yes	The front door. Introductions, announcements, anything.
+#organizing	yes	Campus organizing: meetings, actions, who is doing what.
+#cs	yes	Computer science grad students.
+#help	yes	Questions about using the network.
+#offtopic	no	Everything else.

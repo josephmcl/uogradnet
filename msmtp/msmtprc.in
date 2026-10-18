@@ -1,0 +1,22 @@
+# msmtp: how Atheme sends registration codes (installed as /etc/msmtprc,
+# readable by root and the irc group only, because it holds the token).
+#
+# Proton Mail SMTP submission: needs a paid plan and an address on a
+# custom domain. The token comes from Proton under
+# Settings -> IMAP/SMTP -> SMTP tokens.
+
+defaults
+auth           on
+tls            on
+tls_starttls   on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+syslog         LOG_MAIL
+
+account        proton
+host           smtp.protonmail.ch
+port           587
+from           @MAIL_FROM@
+user           @MAIL_FROM@
+password       @SMTP_TOKEN@
+
+account default : proton

@@ -1,0 +1,15 @@
+From: &from&
+To: &to&
+Reply-To: &replyto&
+Subject: Confirm your new &netname& email address
+Date: &date&
+
+Hello &accountname&,
+
+To confirm this address for your &netname& account, type this on IRC:
+
+/msg &nicksvs& VERIFY EMAILCHG &accountname& &param&
+
+If you didn't ask for this, ignore this email.
+
+https://uogradnet.xyz/

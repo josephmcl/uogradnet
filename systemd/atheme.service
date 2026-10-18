@@ -1,0 +1,24 @@
+# Atheme services (NickServ, ChanServ, ...), linked to UnrealIRCd on 127.0.0.1:6900.
+# Built from source into /opt/atheme by deploy/atheme-build.sh.
+[Unit]
+Description=Atheme IRC services
+After=unrealircd.service
+Wants=unrealircd.service
+
+[Service]
+Type=simple
+User=irc
+Group=irc
+RuntimeDirectory=atheme
+ExecStart=/opt/atheme/bin/atheme-services -n -c /etc/atheme/atheme.conf -D /var/lib/atheme -l /var/log/atheme/atheme.log -p /run/atheme/atheme.pid
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/atheme /var/log/atheme
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,28 @@
+# UnrealIRCd, compiled into ~unrealircd by deploy/bootstrap.sh.
+[Unit]
+Description=UnrealIRCd IRC server
+Documentation=https://www.unrealircd.org/docs/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=unrealircd
+Group=unrealircd
+ExecStart=/home/unrealircd/unrealircd/bin/unrealircd -F
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=5s
+LimitNOFILE=65536
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+
+[Install]
+WantedBy=multi-user.target

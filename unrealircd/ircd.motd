@@ -1,0 +1,18 @@
+ _   _  ___   ____               _ _   _      _
+| | | |/ _ \ / ___|_ __ __ _  __| | \ | | ___| |_
+| | | | | | | |  _| '__/ _` |/ _` |  \| |/ _ \ __|
+| |_| | |_| | |_| | | | (_| | (_| | |\  |  __/ |_
+ \___/ \___/ \____|_|  \__,_|\__,_|_| \_|\___|\__|
+
+Chat for University of Oregon graduate students.
+Run by grad students; not affiliated with the University of Oregon.
+
+  /join #help           ask anything
+  /msg NickServ REGISTER <password> <you@uoregon.edu>
+                        get an account; the other channels need one
+  /msg ALIS LIST *      see every channel
+
+Channels marked "logged" on https://uogradnet.xyz/ are saved by the
+chatlog bot. Private messages are never saved.
+
+Source for everything: https://github.com/josephmcl/uogradnet

@@ -1,0 +1,8 @@
+[Unit]
+Description=Renew the UOGradNet TLS certificate (uacme)
+After=network-online.target lighttpd.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /srv/uogradnet/src/deploy/renew-certs.sh
