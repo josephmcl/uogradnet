@@ -109,6 +109,8 @@ log {
 
 /* ---------------------------------------------------------------- settings */
 
+secret historydb { password "@HISTORY_DB_SECRET@"; }
+
 set {
 	network-name     "UOGradNet";
 	default-server   "irc.uogradnet.xyz";
@@ -128,9 +130,25 @@ set {
 	/* +R: only verified accounts can join. #help is the exception; at first
 	 * boot: /msg ChanServ REGISTER #help, then
 	 *       /msg ChanServ SET #help MLOCK +nt-R
-	 * +H: the server keeps 200 lines / 1 day of scrollback. */
-	modes-on-join    "+ntRH 200:1d";
+	 * +H: the server keeps each channel's last 5000 lines / 31 days. */
+	modes-on-join    "+ntRH 5000:31d";
 	maxchannelsperuser 30;
+
+	/* Scrollback for people who weren't online. Everyone gets the last 50
+	 * lines on join; clients that speak CHATHISTORY (Kiwi does: scroll up)
+	 * can page back through the rest. Saved to disk, encrypted with the
+	 * historydb secret below, so a restart doesn't lose it. */
+	history {
+		channel {
+			playback-on-join { lines 50; time 7d; }
+			max-storage-per-channel {
+				registered   { lines 5000; time 31d; }
+				unregistered { lines 5000; time 31d; }
+			}
+			persist yes;
+			db-secret "historydb";
+		}
+	}
 	options { hide-ulines; }
 	plaintext-policy { user allow; oper warn; server allow; }
 
