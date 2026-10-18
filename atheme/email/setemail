@@ -1,8 +1,10 @@
 From: &from&
 To: &to&
-Reply-To: &replyto&
 Subject: Confirm your new &netname& email address
 Date: &date&
+Message-ID: <&param&@uogradnet.xyz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 
 Hello &accountname&,
 
