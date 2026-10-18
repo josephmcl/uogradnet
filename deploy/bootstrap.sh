@@ -100,12 +100,16 @@ EOF
 	echo
 fi
 
-say "firewall: 80, 443, 6697"
-for port in 80 443 6697; do
-	iptables -C INPUT -p tcp --dport "$port" -m conntrack --ctstate NEW -j ACCEPT 2>/dev/null ||
-		iptables -I INPUT -p tcp --dport "$port" -m conntrack --ctstate NEW -j ACCEPT
-done
-command -v netfilter-persistent >/dev/null && netfilter-persistent save >/dev/null
+say "firewall: 80, 443, 6767"
+if command -v ufw >/dev/null && ufw status | grep -q '^Status: active'; then
+	ufw allow 80,443,6767/tcp >/dev/null    # Vultr's Ubuntu image runs ufw
+else
+	for port in 80 443 6767; do
+		iptables -C INPUT -p tcp --dport "$port" -m conntrack --ctstate NEW -j ACCEPT 2>/dev/null ||
+			iptables -I INPUT -p tcp --dport "$port" -m conntrack --ctstate NEW -j ACCEPT
+	done
+	command -v netfilter-persistent >/dev/null && netfilter-persistent save >/dev/null
+fi
 
 say "TLS certificate for: $NAMES"
 install -d /var/www/.well-known/acme-challenge

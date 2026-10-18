@@ -6,7 +6,7 @@
  * as ~unrealircd/unrealircd/conf/unrealircd.conf. Edit it here, in git.
  *
  * Ports
- *   :6697            public, TLS        - IRC clients
+ *   :6767            public, TLS        - IRC clients
  *   127.0.0.1:6667   localhost, plain   - the chatlog bot
  *   127.0.0.1:6900   localhost, plain   - Atheme services link
  *   127.0.0.1:8000   localhost, plain   - WebSocket, reverse-proxied by lighttpd
@@ -58,7 +58,7 @@ oper admin {
 
 listen {
 	ip *;
-	port 6697;
+	port 6767;
 	options { tls; }
 	tls-options {
 		certificate "tls/server.cert.pem";   /* copied from uacme by deploy/renew-certs */
