@@ -26,4 +26,4 @@ jobs:
           -subj /CN=uogradnet.xyz \
           -keyout /etc/ssl/uacme/private/uogradnet.xyz/key.pem \
           -out /etc/ssl/uacme/uogradnet.xyz/cert.pem
-        lighttpd -tt -f lighttpd/lighttpd.conf
+        sudo lighttpd -tt -f lighttpd/lighttpd.conf

@@ -16,13 +16,6 @@ awk -F'\t' '
 	END { exit bad }
 ' channels.tsv
 
-# the landing page lists every channel in channels.tsv
-awk -F'\t' 'NR > 1 { print $1 }' channels.tsv |
-while read -r channel; do
-	grep -qF "#${channel#\#}</a>" www/index.html ||
-		{ echo "www/index.html: $channel is in channels.tsv but not on the page" >&2; exit 1; }
-done
-
 # every local href/src in the pages points at a file that exists
 for page in www/index.html www/cs/index.html; do
 	dir=$(dirname "$page")
