@@ -7,7 +7,7 @@
 #   renew-certs.sh --install-only  just copy the current cert to UnrealIRCd
 set -eu
 
-NAMES="uogradnet.xyz irc.uogradnet.xyz cs.uogradnet.xyz chat.uogradnet.xyz"
+NAMES="uogradnet.xyz www.uogradnet.xyz irc.uogradnet.xyz cs.uogradnet.xyz chat.uogradnet.xyz"
 CERT=/etc/ssl/uacme/uogradnet.xyz/cert.pem
 KEY=/etc/ssl/uacme/private/uogradnet.xyz/key.pem
 TLS=/home/unrealircd/unrealircd/conf/tls

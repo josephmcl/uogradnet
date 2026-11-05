@@ -11,6 +11,7 @@ typedef struct {
     char nick[SESSION_NICK];        /* our nick, as the server sees it */
     char caps[SESSION_CAPS];        /* every capability the server offers */
     int  sasl_failed;
+    int  logged_in;                 /* got 903 */
     int  welcomed;                  /* got 001 */
     int  registered;                /* sent NickServ REGISTER */
 } session_info;
@@ -180,6 +181,7 @@ static void _authenticate(irc_message *message) {
 static void _sasl_done(irc_message *message) {
     if (strcmp(message->command, "903") == 0) {
         notice_c("logged in to services as %s", Settings.info->account);
+        TheSession.logged_in = 1;
     } else {
         warning_c("SASL login failed (%s); continuing without an account",
                   message->command);
@@ -201,6 +203,16 @@ static void _welcome(irc_message *message) {
         return;
     snprintf(TheSession.nick, sizeof TheSession.nick, "%s", message->parameters[0]);
     notice_c("registered as %s", TheSession.nick);
+
+    /* No SASL on offer means services haven't linked yet (the IRC server
+       just restarted). Without an account the logged-in-only channels
+       would refuse us, so leave and let main() reconnect shortly. */
+    if (*Settings.info->password && !TheSession.logged_in && !TheSession.sasl_failed) {
+        warning_c("%s", "services not up yet; reconnecting");
+        Irc.send("QUIT :waiting for services");
+        return;
+    }
+
     Irc.send("MODE %s +B", TheSession.nick); /* mark as a bot */
     TheSession.welcomed = 1;
     _maybe_register();

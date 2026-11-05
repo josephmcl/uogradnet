@@ -12,7 +12,7 @@ set -eu
 UNREAL_VERSION=6.2.7
 KIWI_VERSION=1.7.1
 KIWI_BUILD=2
-NAMES="uogradnet.xyz irc.uogradnet.xyz cs.uogradnet.xyz chat.uogradnet.xyz"
+NAMES="uogradnet.xyz www.uogradnet.xyz irc.uogradnet.xyz cs.uogradnet.xyz chat.uogradnet.xyz"
 
 [ "$(id -u)" -eq 0 ] || { echo "run with sudo" >&2; exit 1; }
 [ $# -eq 2 ] || { echo "usage: $0 ADMIN_EMAIL ADMIN_NICK" >&2; exit 64; }
